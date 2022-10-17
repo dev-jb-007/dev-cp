@@ -1,0 +1,11 @@
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==9062==ERROR: AddressSanitizer: stack-overflow on address 0xffffceddb270 (pc 0xaaaad1606328 bp 0xffffcf5dae80 sp 0xffffceddae70 T0)
+    #0 0xaaaad1606328 in solve() /home/parallels/Desktop/cp/c.cpp:83
+    #1 0xaaaad1608124 in main /home/parallels/Desktop/cp/c.cpp:132
+    #2 0xffff972b73f8 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #3 0xffff972b74c8 in __libc_start_main_impl ../csu/libc-start.c:392
+    #4 0xaaaad160566c in _start (/home/parallels/Desktop/cp/c+0x2566c)
+
+SUMMARY: AddressSanitizer: stack-overflow /home/parallels/Desktop/cp/c.cpp:83 in solve()
+==9062==ABORTING
