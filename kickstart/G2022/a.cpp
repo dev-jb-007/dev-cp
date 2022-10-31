@@ -180,42 +180,81 @@ bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-
+vi graph[100005];
+vi vis(100005,0);
+map<pair<int,int>,int> marked;
+map<pair<int,int>,int> value;
+vi ans(100005,0);
+void dfs(int node){
+	vis[node]=1;
+	for(auto i:graph[node])
+	{
+		if(vis[i]==0)
+		{
+			marked[{node,i}]=1;
+			marked[{i,node}]=1;
+			dfs(i);
+		}
+	}
+}
+void dfs2(int node,int par,int n)
+{
+	vis[node]=1;
+	if(value[node,par]==ans[par])
+	{
+		ans[node]=0;
+	}
+	else{
+		ans[node]=
+	}
+	for(auto i:graph[node])
+	{
+		if(vis[i]==0&&marked[{node,i}]==1)
+		{
+			if(value[{node,i}]==ans[par])
+			{
+				ans[node]=0;
+			}
+			else{
+				ans[i]=valie[no]
+			}
+		}
+	}
+}
 void solve(){
-	ll n,m,p;
-	cin>>m>>n>>p;
-	ll ans=0;
-	vector<vector<ll>> dp(m,vector<ll>(n,0));
-	for(ll i=0;i<m;i++)
+	int n,m;
+	cin>>n>>m;
+	for(int i=0;i<m;i++)
 	{
-		for(ll j=0;j<n;j++)
-		{
-			cin>>dp[i][j];
-		}
+		int a,b,c;
+		cin>>a>>b>>c;
+		graph[a].PB(b);
+		graph[b].PB(a);
+		value[{a,b}]=c;
+		value[{b,a}]=c;
 	}
-	for(ll i=0;i<n;i++)
+	dfs(1);
+	for(int i=1;i<=n;i++)
 	{
-		ll maxi=0;
-		for(ll j=0;j<m;j++)
-		{
-			maxi=max(maxi,dp[j][i]);
-		}
-		//debug(maxi);
-		ans+=(maxi-dp[p-1][i]);
+		vis[i]=0;
 	}
-	cout<<ans<<endl;
+	dfs2(1,-1,n);
+	for(int i=1;i<=n;i++)
+	{
+		vis[i]=0;
+	}
+	for(int i=1;i<=n;i++)
+	{
+		cout<<ans[i]<<endl;
+	}
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
-    ll test_case=1;
     int t=1;
-    cin>>t;
     while(t--)
     {
-        cout<<"Case #"<<test_case<<": ";
         solve();
-        test_case++;
     }
     return 0;
 }

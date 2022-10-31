@@ -179,60 +179,10 @@ bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-int n;
-vector<int> tree;
-void build()
-{
-	for(int i=n-1;i>0;i--)
-	{
-		tree[i]=(tree[2*i]+tree[2*i+1]);
-	}
-}
-void update(int p,int val)
-{
-	p+=n;
-	tree[p]=val;
-	for(;p>1;p=(p/2))
-	{
-		debug(p);
-		tree[p/2]=(tree[p]+tree[p^1]);
-	}
-}
-int query(int l,int r)
-{
-	int res=0;
-	for(l+=n,r+=n;l<r;l=l/2,r=r/2)
-	{
-		if(l&1)
-		{
-			res+=tree[l++];
-		}
-		if(r&1)
-		{
-			res+=tree[--r];
-		}
-	}
-	return res;
-}
+
 void solve(){
-	cin>>n;
-	vector<int> a(n);
-	tree.resize(2*n,0);
-	for(int i=0;i<n;i++){
-		cin>>a[i];
-		tree[i+n]=a[i];
-	}
-	build();
-	update(n-1,0);
-	update(1,0);
-	for(int i=n;i<2*n;i++)
-	{
-		cout<<tree[i]<<" ";
-	}
-	cout<<endl;	
-	cout<<query(0,n+1)<<endl;
-}
 	
+}
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);

@@ -1,4 +1,3 @@
-
 #include<bits/stdc++.h>
 //#include <ext/pb_ds/assoc_container.hpp>
 //#include <ext/pb_ds/tree_policy.hpp>
@@ -6,7 +5,6 @@
 //using namespace __gnu_pbds;
 using namespace std;
 typedef long long ll;
-typedef long l;
 typedef double db;
 typedef long double lld;
 typedef unsigned long long ull;
@@ -26,9 +24,10 @@ typedef unordered_map<long long int,int> umli;
 typedef unordered_map<int,long long int> umil;
 typedef unordered_map<int,char> umic;
 typedef unordered_map<long long int,char> umlc;
- 
 #define ST string
 #define F first
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
 #define S second
 #define store(x) store.count(x)
 #define PB push_back
@@ -39,21 +38,6 @@ typedef unordered_map<long long int,char> umlc;
 #define FORV(V) for(auto i:V)
 #define sortVector(V) sort(V.begin(),V.end);
 #define vecInput(V,n) for(ll i=0;i<n;i++) cin>>V[i];
-template<class T>
-bool isFloatequal(T a,T b)
-{
-    if(abs(a-b)<1e-9)
-    {
-        return true;
-    }
-    return false;
-}
-#ifndef ONLINE_JUDGE
-#define debug(x) cerr << #x <<" "; _print(x); cerr << endl;
-#else
-#define debug(x)
-#endif
- 
 void _print(ll t) {cerr << t;}
 void _print(int t) {cerr << t;}
 void _print(string t) {cerr << t;}
@@ -61,7 +45,6 @@ void _print(char t) {cerr << t;}
 void _print(lld t) {cerr << t;}
 void _print(double t) {cerr << t;}
 void _print(ull t) {cerr << t;}
- 
 template <class T, class V> void _print(pair <T, V> p);
 template <class T> void _print(vector <T> v);
 template <class T> void _print(set <T> v);
@@ -73,153 +56,234 @@ template <class T> void _print(set <T> v) {cerr << "[ "; for (T i : v) {_print(i
 template <class T> void _print(multiset <T> v) {cerr << "[ "; for (T i : v) {_print(i); cerr << " ";} cerr << "]";}
 template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
 template <class T, class V> void _print(unordered_map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
-int64_t INF=9223372036854775807;
+
+
+//Modular
+
+const int mod = 998244353;
+
+template <const int32_t MOD> struct modint {
+  int32_t value;
+  modint() = default;
+  modint(int32_t value_) : value(value_) {}
+  modint(int64_t value_) : value(value_ % MOD) {}
+  inline modint<MOD> operator+(modint<MOD> other) const {
+    int32_t c = this->value + other.value;
+    return modint<MOD>(c >= MOD ? c - MOD : c);
+  }
+  inline modint<MOD> operator-(modint<MOD> other) const {
+    int32_t c = this->value - other.value;
+    return modint<MOD>(c < 0 ? c + MOD : c);
+  }
+  inline modint<MOD> operator*(modint<MOD> other) const {
+    int32_t c = (int64_t)this->value * other.value % MOD;
+    return modint<MOD>(c < 0 ? c + MOD : c);
+  }
+  inline modint<MOD> &operator+=(modint<MOD> other) {
+    this->value += other.value;
+    if (this->value >= MOD)
+      this->value -= MOD;
+    return *this;
+  }
+  inline modint<MOD> &operator-=(modint<MOD> other) {
+    this->value -= other.value;
+    if (this->value < 0)
+      this->value += MOD;
+    return *this;
+  }
+  inline modint<MOD> &operator*=(modint<MOD> other) {
+    this->value = (int64_t)this->value * other.value % MOD;
+    if (this->value < 0)
+      this->value += MOD;
+    return *this;
+  }
+  inline modint<MOD> operator-() const {
+    return modint<MOD>(this->value ? MOD - this->value : 0);
+  }
+  modint<MOD> pow(uint64_t k) const {
+    modint<MOD> x = *this, y = 1;
+    for (; k; k >>= 1) {
+      if (k & 1)
+        y *= x;
+      x *= x;
+    }
+    return y;
+  }
+  modint<MOD> inv() const { return pow(MOD - 2); } // MOD must be a prime
+  inline modint<MOD> operator/(modint<MOD> other) const {
+    return *this * other.inv();
+  }
+  inline modint<MOD> operator/=(modint<MOD> other) {
+    return *this *= other.inv();
+  }
+  inline bool operator==(modint<MOD> other) const {
+    return value == other.value;
+  }
+  inline bool operator!=(modint<MOD> other) const {
+    return value != other.value;
+  }
+  inline bool operator<(modint<MOD> other) const { return value < other.value; }
+  inline bool operator>(modint<MOD> other) const { return value > other.value; }
+};
+
+template <int32_t MOD> modint<MOD> operator*(int64_t value, modint<MOD> n) {
+  return modint<MOD>(value) * n;
+}
+template <int32_t MOD> modint<MOD> operator*(int32_t value, modint<MOD> n) {
+  return modint<MOD>(value % MOD) * n;
+}
+template <int32_t MOD> istream &operator>>(istream &in, modint<MOD> &n) {
+  return in >> n.value;
+}
+template <int32_t MOD> ostream &operator<<(ostream &out, modint<MOD> n) {
+  return out << n.value;
+}
+
+using mint = modint<mod>;
+
+//Modular
+
+
+#ifndef ONLINE_JUDGE
+#define debug(x) cerr << #x <<" "; _print(x); cerr << endl;
+#else
+#define debug(x)
+#endif
+template<class T>
+bool isFloatequal(T a,T b)
+{
+    if(abs(a-b)<1e-9)
+    {
+        return true;
+    }
+    return false;
+}
+mint power(mint x, int y){
+    mint prod = 1;
+    while(y){
+        if(y&1) prod = (prod * x);
+        x = (x * x);
+        y /= 2;
+    }
+    return prod;
+}
+vector<mint> fact(200005,0);
+mint ncr(int n, int r){
+    if(n < r) return 0;
+    mint ans = fact[n];
+    mint x = (fact[r] * fact[n - r]);
+    ans *= power(x, mod - 2);
+    return ans;
+}
 bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-int64_t mini(int64_t a,int64_t b)
+ll calc(ll l,ll r,vl &pref)
 {
-	if(a<b)
-	{
-		return a;
-	}
-	else{
-		return b;
-	}
+	return (pref[r]-pref[l-1])%9;
 }
 void solve(){
-    ll r,g,b;
-    cin>>r>>g>>b;
-    vl red(r),green(g),blue(b);
-    vecInput(red,r);
-    vecInput(green,g);
-    vecInput(blue,b);
-    sort(red.begin(),red.end());
-    sort(green.begin(),green.end());
-    sort(blue.begin(),blue.end());
-    int64_t ans=INF;
-    //cout<<ans<<endl;
-    debug(red);
-    debug(green);
-    debug(blue);
-    for(ll i=0;i<r;i++)
-    {
-		vector<int64_t> one(2,INF),two(2,INF);
-		ll ct=upper_bound(green.begin(),green.end(),red[i])-green.begin();
-		if(ct!=(ll)green.size())
-		{
-			one[1]=green[ct];
-		}
-		ct--;
-		if(ct>=0)
-		{
-			one[0]=green[ct];
-		}
-		ct=upper_bound(blue.begin(),blue.end(),red[i])-blue.begin();
-		if(ct!=(ll)blue.size())
-		{
-			two[1]=blue[ct];
-		}
-		ct--;
-		if(ct>=0)
-		{
-			two[0]=blue[ct];
-		}
-		//cout<<one[0]<<" "<<one[1]<<endl;
-		//cout<<two[0]<<" "<<two[1]<<endl;
-		int64_t help=INF;
-		for(ll j=0;j<2;j++)
-		{
-			for(ll k=0;k<2;k++)
+	ST s;
+	cin>>s;
+	//debug(s);
+	ll n=s.length();
+	//debug(n);
+	vl pref(n+1,0);
+	for(ll i=1;i<=n;i++)
+	{
+		pref[i]=(pref[i-1]+s[i-1]-'0');
+	}
+	//debug(pref);
+	ll w,m;
+	cin>>w>>m;
+	vector<vector<ll>> dev(9);
+	ll i=0,j=w-1;
+	while(j<n)
+	{
+		dev[calc(i+1,j+1,pref)].PB(i+1);
+		//debug(i);
+		//debug(j);
+		i++;
+		j++;
+	}
+	//debug(dev);
+	while(m--)
+	{	
+		//debug(m);
+		ll l,r,k;
+		cin>>l>>r>>k;
+		pair<ll,ll> ans={INT_MAX,INT_MAX};
+		bool flag;
+		for(ll p=0;p<=8;p++){
+			
+			if(dev[p].size()!=0)
 			{
-				if(one[j]<=(1e9)&&two[k]<=(1e9))
+				for(ll q=0;q<=8;q++)
 				{
-					help=mini(help,(one[j]-red[i])*(one[j]-red[i])+(red[i]-two[k])*(red[i]-two[k])+(one[j]-two[k])*(one[j]-two[k]));	
+					if((p*calc(l,r,pref)+q)%9!=k) continue;
+					if(q!=p)
+					{
+						if(dev[q].size()!=0)
+						{
+							flag=true;
+							if(dev[p][0]<ans.first)
+							{
+								ans={dev[p][0],dev[q][0]};
+							}
+							else if(dev[p][0]==ans.first)
+							{
+								if(dev[q][0]<ans.second)
+								{
+									ans={dev[p][0],dev[q][0]};
+								}
+							}
+						}
+						else{
+							
+						}
+					}
+					else{
+						if(dev[q].size()>=2)
+						{
+							flag=true;
+							if(dev[p][0]<ans.first)
+							{
+								ans={dev[p][0],dev[q][1]};
+							}
+							else if(dev[p][0]==ans.first)
+							{
+								if(dev[q][1]<ans.second)
+								{
+									ans={dev[p][0],dev[q][1]};
+								}
+							}
+						}
+						else{
+							
+						}
+					}
 				}
 			}
 		}
-		//cout<<help<<"\n";
-		ans=min(ans,help);
+		//debug(flag);
+		//debug(ans);
+		//cout<<ans.first<<" "<<ans.second<<endl;
+		if(ans.first==INT_MAX)
+		{
+			ans={-1,-1};
+		}
+		
+			cout<<ans.first<<" "<<ans.second<<"\n";
+			
+		//cout<<"HELLO\n";
 	}
-	for(ll i=0;i<g;i++)
-    {
-		vector<int64_t> one(2,INF),two(2,INF);
-		ll ct=upper_bound(red.begin(),red.end(),green[i])-red.begin();
-		//debug(ct);
-		if(ct!=(ll)red.size())
-		{
-			one[1]=red[ct];
-		}
-		ct--;
-		if(ct>=0)
-		{
-			one[0]=red[ct];
-		}
-		ct=upper_bound(blue.begin(),blue.end(),green[i])-blue.begin();
-		if(ct!=(ll)blue.size())
-		{
-			two[1]=blue[ct];
-		}
-		ct--;
-		if(ct>=0)
-		{
-			two[0]=blue[ct];
-		}
-		int64_t help=INF;
-		//cout<<one[0]<<" "<<one[1]<<endl;
-		//cout<<two[0]<<" "<<two[1]<<endl;
-		for(ll j=0;j<2;j++)
-		{
-			for(ll k=0;k<2;k++)
-			{
-				if(one[j]<=(1e9)&&two[k]<=(1e9))
-					help=mini(help,(int64_t)(one[j]-green[i])*(one[j]-green[i])+(int64_t)(green[i]-two[k])*(green[i]-two[k])+(int64_t)(one[j]-two[k])*(one[j]-two[k]));
-			}
-		}
-		ans=min(ans,help);
-	}
-	for(ll i=0;i<b;i++)
-    {
-		vector<int64_t> one(2,INF),two(2,INF);
-		ll ct=upper_bound(green.begin(),green.end(),blue[i])-green.begin();
-		if(ct!=(ll)green.size())
-		{
-			one[1]=green[ct];
-		}
-		ct--;
-		if(ct>=0)
-		{
-			one[0]=green[ct];
-		}
-		ct=upper_bound(red.begin(),red.end(),blue[i])-red.begin();
-		if(ct!=(ll)red.size())
-		{
-			two[1]=red[ct];
-		}
-		ct--;
-		if(ct>=0)
-		{
-			two[0]=red[ct];
-		}
-		int64_t help=INF;
-		for(ll j=0;j<2;j++)
-		{
-			for(ll k=0;k<2;k++)
-			{
-				if(one[j]<=(1e9)&&two[k]<=(1e9))
-					help=mini(help,(int64_t)(one[j]-blue[i])*(one[j]-blue[i])+(int64_t)(blue[i]-two[k])*(blue[i]-two[k])+(int64_t)(one[j]-two[k])*(one[j]-two[k]));
-			}
-		}
-		ans=min(ans,help);
-	}
-	cout<<ans<<endl;
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
     int t=1;
-    cin>>t;
+	cin>>t;
     while(t--)
     {
         solve();

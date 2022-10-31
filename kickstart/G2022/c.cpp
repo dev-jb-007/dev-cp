@@ -73,30 +73,10 @@ template <class T> void _print(multiset <T> v) {cerr << "[ "; for (T i : v) {_pr
 template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
 template <class T, class V> void _print(unordered_map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
 ll test_case=1;
-ll check(vl a)
+ll calc(ll i,ll j,vl &a,vl &pref,vl &pref2)
 {
-	ll n=a.size();
-	vl pref(n,0);
-	ll sum=0;
-	for(ll i=0;i<n;i++)
-	{
-		sum+=a[i];
-		if(i==0)
-		{
-			pref[i]=a[i];
-		}
-		else{
-			pref[i]=(pref[i-1]+a[i]);
-		}
-	}
-	for(ll i=0;i<n;i++)
-	{
-		if(pref[i]<0)
-		{
-			return 0;
-		}
-	}
-	return pref[n-1];
+	ll ans=(pref2[j]-pref2[i-1]-(j-i+1)*pref[i-1]);
+	return ans;
 }
 ll INF=-1e18;
 void solve(){
@@ -104,67 +84,44 @@ void solve(){
     cin>>n;
     vl a(n);
     vecInput(a,n);
-    vl pref(n,0);
+    vl pref(n+1,0);
+    vl pref2(n+1,0);
     ll ans=0;
-    vector<pair<ll,ll>> vec;
-	for(ll i=0;i<n;i++)
+    for(int i=1;i<=n;i++)
+    {
+		pref[i]=(pref[i-1]+a[i-1]);
+	}
+	for(int i=1;i<=n;i++)
 	{
-		if(i==0)
+		pref2[i]=(pref2[i-1]+pref[i]);
+	}
+	vector<int> nxt_smallest(n+1,-1);
+	stack<pair<int,int>> s;
+	s.push({0,0});
+	for(int i=1;i<=n;i++)
+	{
+		while(!s.empty()&&(s.top().first>(pref[i])))
 		{
-			pref[i]=a[i];
+			nxt_smallest[s.top().second+1]=i;
+			s.pop();
 		}
-		else{
-			pref[i]=(pref[i-1]+a[i]);
-		}
-		vec.PB({pref[i],i});
+		s.push({pref[i],i});
 	}
-	sort(vec.begin(),vec.end());
-	vector<ll> temp(n);
-	for(ll i=0;i<n;i++)
+	for(int i=1;i<=n;i++)
 	{
-		temp[i]=vec[i].first;
-	}
-	vl dp(n,INF);
-	for(ll i=0;i<n;i++)
-	{
-		if(i==0)
-		{
-			dp[i]=vec[i].second;
-		}
-		else{
-			dp[i]=min(dp[i-1],vec[i].second);
-		}
-	}
-	vector<ll> cnt(n,0);
-	for(ll i=0;i<n;i++)
-	{
-		if(a[i]<0)
+		if(a[i-1]<0)
 		{
 			continue;
 		}
-		ll j=i;
-		vl dev;
-		while(j<n&&pref[j]>=pref[i])
+		if(nxt_smallest[i]==-1)
 		{
-			if(a[j]>0)
-			{
-				dev.PB(j);
-			}
-			j++;
+			ans+=calc(i,n,a,pref,pref2);
 		}
-		ll ct=1;
-		for(ll k=j-1;k>=i;k--)
-		{
-			cnt[k]+=(ct);
-			ct++;
+		else{
+			ans+=calc(i,nxt_smallest[i]-1,a,pref,pref2);
 		}
-		i=j-1;
-	}
-	for(ll i=0;i<n;i++){
-		ans+=(cnt[i]*a[i]);
 	}
 	cout<<ans<<endl;
-	
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);

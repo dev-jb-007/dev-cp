@@ -5,7 +5,6 @@
 //using namespace __gnu_pbds;
 using namespace std;
 typedef long long ll;
-typedef long l;
 typedef double db;
 typedef long double lld;
 typedef unsigned long long ull;
