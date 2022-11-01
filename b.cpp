@@ -24,7 +24,6 @@ typedef unordered_map<long long int,int> umli;
 typedef unordered_map<int,long long int> umil;
 typedef unordered_map<int,char> umic;
 typedef unordered_map<long long int,char> umlc;
-#define mod 1000000007
 #define ST string
 #define F first
 #define all(x) (x).begin(), (x).end()
@@ -57,6 +56,94 @@ template <class T> void _print(set <T> v) {cerr << "[ "; for (T i : v) {_print(i
 template <class T> void _print(multiset <T> v) {cerr << "[ "; for (T i : v) {_print(i); cerr << " ";} cerr << "]";}
 template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
 template <class T, class V> void _print(unordered_map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
+
+
+//Modular
+
+const int mod = 998244353;
+
+template <const int32_t MOD> struct modint {
+  int32_t value;
+  modint() = default;
+  modint(int32_t value_) : value(value_) {}
+  modint(int64_t value_) : value(value_ % MOD) {}
+  inline modint<MOD> operator+(modint<MOD> other) const {
+    int32_t c = this->value + other.value;
+    return modint<MOD>(c >= MOD ? c - MOD : c);
+  }
+  inline modint<MOD> operator-(modint<MOD> other) const {
+    int32_t c = this->value - other.value;
+    return modint<MOD>(c < 0 ? c + MOD : c);
+  }
+  inline modint<MOD> operator*(modint<MOD> other) const {
+    int32_t c = (int64_t)this->value * other.value % MOD;
+    return modint<MOD>(c < 0 ? c + MOD : c);
+  }
+  inline modint<MOD> &operator+=(modint<MOD> other) {
+    this->value += other.value;
+    if (this->value >= MOD)
+      this->value -= MOD;
+    return *this;
+  }
+  inline modint<MOD> &operator-=(modint<MOD> other) {
+    this->value -= other.value;
+    if (this->value < 0)
+      this->value += MOD;
+    return *this;
+  }
+  inline modint<MOD> &operator*=(modint<MOD> other) {
+    this->value = (int64_t)this->value * other.value % MOD;
+    if (this->value < 0)
+      this->value += MOD;
+    return *this;
+  }
+  inline modint<MOD> operator-() const {
+    return modint<MOD>(this->value ? MOD - this->value : 0);
+  }
+  modint<MOD> pow(uint64_t k) const {
+    modint<MOD> x = *this, y = 1;
+    for (; k; k >>= 1) {
+      if (k & 1)
+        y *= x;
+      x *= x;
+    }
+    return y;
+  }
+  modint<MOD> inv() const { return pow(MOD - 2); } // MOD must be a prime
+  inline modint<MOD> operator/(modint<MOD> other) const {
+    return *this * other.inv();
+  }
+  inline modint<MOD> operator/=(modint<MOD> other) {
+    return *this *= other.inv();
+  }
+  inline bool operator==(modint<MOD> other) const {
+    return value == other.value;
+  }
+  inline bool operator!=(modint<MOD> other) const {
+    return value != other.value;
+  }
+  inline bool operator<(modint<MOD> other) const { return value < other.value; }
+  inline bool operator>(modint<MOD> other) const { return value > other.value; }
+};
+
+template <int32_t MOD> modint<MOD> operator*(int64_t value, modint<MOD> n) {
+  return modint<MOD>(value) * n;
+}
+template <int32_t MOD> modint<MOD> operator*(int32_t value, modint<MOD> n) {
+  return modint<MOD>(value % MOD) * n;
+}
+template <int32_t MOD> istream &operator>>(istream &in, modint<MOD> &n) {
+  return in >> n.value;
+}
+template <int32_t MOD> ostream &operator<<(ostream &out, modint<MOD> n) {
+  return out << n.value;
+}
+
+using mint = modint<mod>;
+
+//Modular
+
+
 #ifndef ONLINE_JUDGE
 #define debug(x) cerr << #x <<" "; _print(x); cerr << endl;
 #else
@@ -71,122 +158,107 @@ bool isFloatequal(T a,T b)
     }
     return false;
 }
-ll power(ll x, ll y){
-    ll prod = 1;
+mint power(mint x, int y){
+    mint prod = 1;
     while(y){
-        if(y & 1) prod = (prod * x) % mod;
-        x = (x * x) % mod;
+        if(y&1) prod = (prod * x);
+        x = (x * x);
         y /= 2;
     }
     return prod;
 }
-//ll ncr(ll n, ll r){
-    //if(n < r) return 0;
-    //ll ans = fact[n];
-    //ll x = (fact[r] * fact[n - r]) % mod;
-    //ans *= power(x, mod - 2);
-    //return ans % mod;
-//}
+vector<mint> fact(200005,0);
+mint ncr(int n, int r){
+    if(n < r) return 0;
+    mint ans = fact[n];
+    mint x = (fact[r] * fact[n - r]);
+    ans *= power(x, mod - 2);
+    return ans;
+}
 bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-
+vl tree[405];
+vl sec_tree[405];
+ll bfs(int node,int n,vl p[])
+{
+	vl vis(n+1,0);
+	vl dist(n+1,INT_MAX);
+	dist[node]=0;
+	queue<ll> q;
+	q.push(node);
+	while(!q.empty()){
+		ll temp = q.front();
+		q.pop();
+		for(auto &it: p[temp]){
+			if(dist[temp]+1<dist[it]){
+				dist[it]=dist[temp]+1;
+				q.push(it);
+			}
+		}
+	}
+	return dist[n];
+}
 void solve(){
-    ll n,m;
-    cin>>n>>m;
-    ll len=0,digit=0;
-    for(ll i=1;i<=9;i++)
-    {
-		ll temp=__gcd(m,i);
-		//debug(temp);
-		ll h=m/temp;
-		ll p=h;
-		//debug(h);
-		if(h==1)
-		{
-			digit=i;
-			len=n;
-		}
-		if(h%7==0)
-		{
-			while(h%7==0)
-			{
-				h=h/7;
-			}
-			if(h==1)
-			{
-				ll hell=(n-n%7);
-				if(hell>len)
-				{
-					len=hell;
-					digit=i;
-				}
-				else if(hell==len)
-				{
-					if(digit<i)
-					{
-						digit=i;
-					}
-				}
-			}
-			else{
-				h=p;
-			}
-		}
-		if(h%3==0)
-		{
-			while(h%3==0)
-			{
-				h=h/3;
-			}
-			if(h==1)
-			{
-				ll hell=(n-n%3);
-				if(hell>len)
-				{
-					len=hell;
-					digit=i;
-				}
-				else if(hell==len)
-				{
-					if(digit>i)
-					{
-						
-					}
-					else{
-						digit=i;
-					}
-				}
-			}
-		}
-	}
-	ll r=m;
-	ll ct=0;
-	while(r)
-	{
-		ct++;
-		r=r/10;
-	}
-	if(len<ct)
+	int n,m;
+	cin>>n>>m;
+	bool flag=false;
+	if(m==0)
 	{
 		cout<<-1<<endl;
 		return;
 	}
-	else if(len==ct)
-	{
+	else{
 		
+		map<pair<ll,ll>,ll> dev;
+		for(int i=0;i<m;i++)
+		{
+			int a,b;
+			cin>>a>>b;
+			tree[a].PB(b);
+			tree[b].PB(a);
+			dev[{a,b}]=1;
+			dev[{b,a}]=1;
+			if((a==1&&b==n)||(a==n&&b==1))
+			{
+				flag=true;
+			}
+		}
+		ll himmu=(n*(n-1));
+		himmu=(himmu/2);
+		//debug(himmu);
+		if(m==himmu){
+			cout<<-1<<endl;
+			return;
+		}
+		//debug(dev);
+		for(int i=1;i<=n;i++)
+		{
+			for(int j=1;j<=n;j++)
+			{
+				if(i!=j)
+				{
+					if(dev[{i,j}]==0)
+					{
+						sec_tree[i].PB(j);
+						//cerr<<i<<" "<<j<<endl;
+					}
+				}
+			}
+		}
 	}
-	if(len==0)
+	if(flag)
 	{
-		cout<<-1<<endl;
+		//debug("hello");
+		ll dholu=bfs(1,n,sec_tree);
+		if(dholu==INT_MAX) dholu=-1;
+		cout<<dholu;
 	}
 	else{
-		for(int i=0;i<len;i++)
-		{
-			cout<<digit;
-		}
-		cout<<endl;
+		ll dholu=bfs(1,n,tree);
+		if(dholu==INT_MAX) dholu=-1;
+		cout<<dholu;
 	}
 }
 int main(int argc, const char * argv[]) {

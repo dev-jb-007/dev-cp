@@ -179,15 +179,70 @@ bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-
+vl primes;
+map<ll,ll> dev;
+void SieveOfEratosthenes(int n)
+{
+    bool prime[n + 1];
+    memset(prime, true, sizeof(prime));
+ 
+    for (int p = 2; p * p <= n; p++) {
+        if (prime[p] == true) {
+            primes.PB(p);
+            for (int i = p * p; i <= n; i += p)
+                prime[i] = false;
+        }
+    }
+}
 void solve(){
-	
+	int n,m;
+	for(auto i:primes)
+	{
+		dev[i]=1;
+	}
+	debug(dev);
+	cin>>n>>m;
+	ll sum=0;
+	for(ll i=1;i<=n-2&&m>0;i++)
+	{
+		sum++;
+		if(sum==2)
+		{
+			cout<<i<<" "<<n<<" 1"<<endl;
+			m--;
+			if(m>0)
+			{
+				if(m==1)
+				{
+					cout<<n<<" "<<i+1<<" 1"<<endl;
+				}
+				cout<<n<<" "<<i+1<<" 1"<<endl;
+				sum++;
+				m--;
+			}
+		}
+		else{
+			cout<<i<<" "<<i+1<<" 1"<<endl;
+		}
+	}
+	ll ct=upper_bound(all(primes),sum)-primes.begin();
+	cout<<n-2<<" "<<n-1<<" "<<primes[ct]-sum<<endl;
+	m--;
+	sum=primes[ct]+5;
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=i+2;j<=n&&m>0;j++)
+		{
+			cout<<i<<" "<<j<<" "<<sum<<endl;
+			m--;
+		}
+	}
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
     int t=1;
-	cin>>t;
+    SieveOfEratosthenes(1e6);
     while(t--)
     {
         solve();
