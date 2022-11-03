@@ -179,49 +179,74 @@ bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-vi tree[200005];
-vi dist(200005,INT_MAX);
-void bfs(int node,int n)
+vi tree[3005];
+vi dist(3005,INT_MAX);
+vi cycle;
+vi vis(3005,0);
+vi parent(3005,-1);
+void dfs(int node,int par)
 {
-	vi vis(n+1,0);
-	queue<int> q;
-	q.push(node);
-	dist[node]=0;
-	while(!q.empty())
+	vis[node]=1;
+	for(auto i:tree[node])
 	{
-		ll temp=q.front();
-		q.pop();
-		for(auto i:tree[temp])
+		if(vis[i]==0)
 		{
-			if(vis[i]==1) continue;
-			if(dist[i]>(dist[temp]+1))
-			{
-				dist[i]=(dist[temp]+1);
-				q.push(i);
-			}
+			parent[i]=node;
+			dfs(i,node);
 		}
-		vis[temp]=1;
+		else if(vis[i]==1&&i!=par&&(cycle.size()==0))
+		{
+			//cycle found;
+			int temp=node;
+			while(temp!=i)
+			{
+				cycle.PB(temp);
+				temp=parent[temp];
+			}
+			cycle.PB(i);
+		}
+	}
+}
+void dfs1(int node,int val)
+{
+	vis[node]=1;
+	dist[node]=val;
+	for(auto i:tree[node])
+	{
+		if(vis[i]==0)
+		{
+			dfs1(i,val+1);
+		}
 	}
 }
 void solve(){
 	int n;
 	cin>>n;
-	for(int i=1;i<n;i++)
-	{
-		tree[i].PB(i+1);
-		tree[i+1].PB(i);
-	}
 	for(int i=1;i<=n;i++)
 	{
-		int a;
-		cin>>a;
-		tree[i].PB(a);
+		int a,b;
+		cin>>a>>b;
+		tree[a].PB(b);
+		tree[b].PB(a);
 	}
-	bfs(1,n);
+	dfs(1,-1);
+	for(int i=1;i<=n;i++)
+	{
+		vis[i]=0;
+	}
+	for(auto i:cycle)
+	{
+		vis[i]=1;
+	}
+	for(auto i:cycle)
+	{
+		dfs1(i,0);
+	}
 	for(int i=1;i<=n;i++)
 	{
 		cout<<dist[i]<<" ";
 	}
+	cout<<endl;
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);
