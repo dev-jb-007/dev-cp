@@ -80,10 +80,6 @@ template <const int32_t MOD> struct modint {
     int32_t c = (int64_t)this->value * other.value % MOD;
     return modint<MOD>(c < 0 ? c + MOD : c);
   }
-  inline modint<MOD> operator/=(modint<MOD> other) const {
-    int32_t c = (int64_t)this->value / other.value % MOD;
-    return modint<MOD>(c < 0 ? c + MOD : c);
-  }
   inline modint<MOD> &operator+=(modint<MOD> other) {
     this->value += other.value;
     if (this->value >= MOD)
@@ -163,97 +159,64 @@ bool isFloatequal(T a,T b)
     }
     return false;
 }
-mint power(mint x, ll y)
-{
+mint power(mint x, int y){
     mint prod = 1;
-    while (y)
-    {
-        if (y & 1)
-            prod = (prod * x);
+    while(y){
+        if(y&1) prod = (prod * x);
         x = (x * x);
         y /= 2;
     }
     return prod;
 }
-vector<ll> fact(200005,0);
-//ll ncr(int n, int r){
-    //if(n < r) return 0;
-    //ll ans = fact[n];
-    //ll x = (fact[r] * fact[n - r]);
-    //ans *= power(x, mod - 2);
-    //return ans;
-//}
+vector<mint> fact(200005,0);
+mint ncr(int n, int r){
+    if(n < r) return 0;
+    mint ans = fact[n];
+    mint x = (fact[r] * fact[n - r]);
+    ans *= power(x, mod - 2);
+    return ans;
+}
 bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-vector<bool> prime;
-void SieveOfEratosthenes(ll n)
+vl tree[100005];
+ll ans=0;
+vl dist(100005,0);
+vl dp(100005,0);
+void dfs(ll node,ll par)
 {
-    // Create a boolean array "prime[0..n]" and initialize
-    // all entries it as true. A value in prime[i] will
-    // finally be false if i is Not a prime, else true.
-    prime.resize(n+1,true);
-    for (int p = 2; p * p <= n; p++) {
-        if (prime[p] == true) {
-            // Update all multiples of p greater than or
-            // equal to the square of it numbers which are
-            // multiple of p and are less than p^2 are
-            // already been marked.
-            for (int i = p * p; i <= n; i += p)
-                prime[i] = false;
-        }
-    }
-}
-void self_add(ll &a,ll &b)
-{
-	a+=b;
-	if(a>=mod)
+	ll maxi=0;
+	ll sum=0;
+	for(auto i:tree[node])
 	{
-		a=a%mod;
+		if(i!=par)
+		{
+			dfs(i,node);
+			maxi=max(maxi,dist[i]);
+			sum+=(dp[i]);
+		}
 	}
-}
-void self_sub(ll &a,ll &b)
-{
-	a-=b;
-	if(a<0)
-	{
-		a+=mod;
-	}
+	dist[node]=maxi+1;
+	dp[node]=max(dist[node],sum);
 }
 void solve(){
 	ll n;
-	mint m;
-	cin>>n>>m;
-	mint curr=1;
-	mint mul=m;
-	mint ans=0;
-	mint j=2;
-	for(int i=2;i<=n;i++)
+	cin>>n;
+	for(ll i=2;i<=n;i++)
 	{
-		if(prime[i])
-		{
-			curr=(curr*i);
-		}
-		curr=min(curr,m+1);
-		mint ct=(m.value/curr.value);
-		//debug(ct);
-		mul=(mul*ct);
-		ans+=(power(m,i)-mul);
+		ll a;
+		cin>>a;
+		tree[a].PB(i);
 	}
-	cout<<ans<<endl;
+	dfs(1,-1);
+	cout<<dp[1]<<endl;
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
     int t=1;
-	//cin>>t;
-	SieveOfEratosthenes(1e5);
-	fact[0]=1;
-	for(int i=1;i<=1e5;i++)
-	{
-		fact[i]=(fact[i-1]*i);
-	}
+
     while(t--)
     {
         solve();

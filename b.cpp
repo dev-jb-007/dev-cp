@@ -179,87 +179,71 @@ bool AreSame(double a, double b)
 {
     return fabs(a - b) < DBL_EPSILON;
 }
-vl tree[405];
-vl sec_tree[405];
-ll bfs(int node,int n,vl p[])
+vi tree[100005];
+vector<vector<int>> dp(100005,vector<int>(101,INT_MAX));
+vi val(100005,0);
+void bfs(int color,int n)
 {
-	vl vis(n+1,0);
-	vl dist(n+1,INT_MAX);
-	dist[node]=0;
-	queue<ll> q;
-	q.push(node);
-	while(!q.empty()){
-		ll temp = q.front();
-		q.pop();
-		for(auto &it: p[temp]){
-			if(dist[temp]+1<dist[it]){
-				dist[it]=dist[temp]+1;
-				q.push(it);
-			}
+	vi vis(n+1,0);
+	queue<int> q;
+	for(int i=1;i<=n;i++){
+		if(val[i]==color)
+		{
+			q.push(i);
+			dp[i][color]=0;
 		}
 	}
-	return dist[n];
+	while(!q.empty())
+	{
+		ll temp=q.front();
+		q.pop();
+		for(auto i:tree[temp])
+		{
+			if(vis[i]==1) continue;
+			if(dp[i][color]>(dp[temp][color]+1))
+			{
+				dp[i][color]=(dp[temp][color]+1);
+				q.push(i);
+			}
+		}
+		vis[temp]=1;
+	}
 }
 void solve(){
-	int n,m;
-	cin>>n>>m;
-	bool flag=false;
-	if(m==0)
+	int n,m,k,s;
+	cin>>n>>m>>k>>s;
+	for(int i=1;i<=n;i++)
 	{
-		cout<<-1<<endl;
-		return;
+		cin>>val[i];
 	}
-	else{
-		
-		map<pair<ll,ll>,ll> dev;
-		for(int i=0;i<m;i++)
-		{
-			int a,b;
-			cin>>a>>b;
-			tree[a].PB(b);
-			tree[b].PB(a);
-			dev[{a,b}]=1;
-			dev[{b,a}]=1;
-			if((a==1&&b==n)||(a==n&&b==1))
-			{
-				flag=true;
-			}
-		}
-		ll himmu=(n*(n-1));
-		himmu=(himmu/2);
-		//debug(himmu);
-		if(m==himmu){
-			cout<<-1<<endl;
-			return;
-		}
-		//debug(dev);
-		for(int i=1;i<=n;i++)
-		{
-			for(int j=1;j<=n;j++)
-			{
-				if(i!=j)
-				{
-					if(dev[{i,j}]==0)
-					{
-						sec_tree[i].PB(j);
-						//cerr<<i<<" "<<j<<endl;
-					}
-				}
-			}
-		}
-	}
-	if(flag)
+	for(int i=1;i<=m;i++)
 	{
-		//debug("hello");
-		ll dholu=bfs(1,n,sec_tree);
-		if(dholu==INT_MAX) dholu=-1;
-		cout<<dholu;
+		int a,b;
+		cin>>a>>b;
+		tree[a].PB(b);
+		tree[b].PB(a);
 	}
-	else{
-		ll dholu=bfs(1,n,tree);
-		if(dholu==INT_MAX) dholu=-1;
-		cout<<dholu;
+	for(int i=1;i<=k;i++)
+	{
+		bfs(i,n);
 	}
+	for(int i=1;i<=n;i++)
+	{
+		vi temp;
+		for(int j=1;j<=k;j++)
+		{
+			temp.PB(dp[i][j]);
+		}
+		sort(all(temp));
+		//debug(temp);
+		int sum=0;
+		for(int j=0;j<s;j++)
+		{
+			sum+=temp[j];
+		}
+		cout<<sum<<" ";
+	}
+	cout<<endl;
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);

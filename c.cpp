@@ -24,7 +24,6 @@ typedef unordered_map<long long int,int> umli;
 typedef unordered_map<int,long long int> umil;
 typedef unordered_map<int,char> umic;
 typedef unordered_map<long long int,char> umlc;
-#define mod 1000000007
 #define ST string
 #define F first
 #define all(x) (x).begin(), (x).end()
@@ -57,92 +56,192 @@ template <class T> void _print(set <T> v) {cerr << "[ "; for (T i : v) {_print(i
 template <class T> void _print(multiset <T> v) {cerr << "[ "; for (T i : v) {_print(i); cerr << " ";} cerr << "]";}
 template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
 template <class T, class V> void _print(unordered_map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
+
+
+//Modular
+
+const int mod = 998244353;
+
+template <const int32_t MOD> struct modint {
+  int32_t value;
+  modint() = default;
+  modint(int32_t value_) : value(value_) {}
+  modint(int64_t value_) : value(value_ % MOD) {}
+  inline modint<MOD> operator+(modint<MOD> other) const {
+    int32_t c = this->value + other.value;
+    return modint<MOD>(c >= MOD ? c - MOD : c);
+  }
+  inline modint<MOD> operator-(modint<MOD> other) const {
+    int32_t c = this->value - other.value;
+    return modint<MOD>(c < 0 ? c + MOD : c);
+  }
+  inline modint<MOD> operator*(modint<MOD> other) const {
+    int32_t c = (int64_t)this->value * other.value % MOD;
+    return modint<MOD>(c < 0 ? c + MOD : c);
+  }
+  inline modint<MOD> &operator+=(modint<MOD> other) {
+    this->value += other.value;
+    if (this->value >= MOD)
+      this->value -= MOD;
+    return *this;
+  }
+  inline modint<MOD> &operator-=(modint<MOD> other) {
+    this->value -= other.value;
+    if (this->value < 0)
+      this->value += MOD;
+    return *this;
+  }
+  inline modint<MOD> &operator*=(modint<MOD> other) {
+    this->value = (int64_t)this->value * other.value % MOD;
+    if (this->value < 0)
+      this->value += MOD;
+    return *this;
+  }
+  inline modint<MOD> operator-() const {
+    return modint<MOD>(this->value ? MOD - this->value : 0);
+  }
+  modint<MOD> pow(uint64_t k) const {
+    modint<MOD> x = *this, y = 1;
+    for (; k; k >>= 1) {
+      if (k & 1)
+        y *= x;
+      x *= x;
+    }
+    return y;
+  }
+  modint<MOD> inv() const { return pow(MOD - 2); } // MOD must be a prime
+  inline modint<MOD> operator/(modint<MOD> other) const {
+    return *this * other.inv();
+  }
+  inline modint<MOD> operator/=(modint<MOD> other) {
+    return *this *= other.inv();
+  }
+  inline bool operator==(modint<MOD> other) const {
+    return value == other.value;
+  }
+  inline bool operator!=(modint<MOD> other) const {
+    return value != other.value;
+  }
+  inline bool operator<(modint<MOD> other) const { return value < other.value; }
+  inline bool operator>(modint<MOD> other) const { return value > other.value; }
+};
+
+template <int32_t MOD> modint<MOD> operator*(int64_t value, modint<MOD> n) {
+  return modint<MOD>(value) * n;
+}
+template <int32_t MOD> modint<MOD> operator*(int32_t value, modint<MOD> n) {
+  return modint<MOD>(value % MOD) * n;
+}
+template <int32_t MOD> istream &operator>>(istream &in, modint<MOD> &n) {
+  return in >> n.value;
+}
+template <int32_t MOD> ostream &operator<<(ostream &out, modint<MOD> n) {
+  return out << n.value;
+}
+
+using mint = modint<mod>;
+
+//Modular
+
+
 #ifndef ONLINE_JUDGE
 #define debug(x) cerr << #x <<" "; _print(x); cerr << endl;
 #else
 #define debug(x)
 #endif
-
+template<class T>
+bool isFloatequal(T a,T b)
+{
+    if(abs(a-b)<1e-9)
+    {
+        return true;
+    }
+    return false;
+}
+mint power(mint x, int y){
+    mint prod = 1;
+    while(y){
+        if(y&1) prod = (prod * x);
+        x = (x * x);
+        y /= 2;
+    }
+    return prod;
+}
+vector<mint> fact(200005,0);
+mint ncr(int n, int r){
+    if(n < r) return 0;
+    mint ans = fact[n];
+    mint x = (fact[r] * fact[n - r]);
+    ans *= power(x, mod - 2);
+    return ans;
+}
+bool AreSame(double a, double b)
+{
+    return fabs(a - b) < DBL_EPSILON;
+}
+vi tree[305];
+vi dfs(int node,vi &vis)
+{
+	vis[node]=1;
+	vi temp;
+	temp.PB(node);
+	//debug(node);
+	//debug(tree[node]);
+	for(auto i:tree[node])
+	{
+		if(vis[i]==0)
+		{
+			vi dev=dfs(i,vis);
+			for(auto j:dev)
+			{
+				temp.PB(j);
+			}
+		}
+	}
+	sort(all(temp));
+	return temp;
+}
 void solve(){
-    ll n,m;
-    cin>>n>>m;
-    ll k;
-    cin>>k;
-    ll req_mask=0;
-    for(ll i=0;i<k;i++)
-    {
-		ll a;
-		cin>>a;
-		a--;
-		req_mask=(req_mask|(1<<a));
+	int n;
+	cin>>n;
+	vi a(n);
+	for(int i=0;i<n;i++){
+		cin>>a[i];
 	}
-	ll l;
-	cin>>l;
-	ll initial_mask=0;
-	for(ll i=0;i<l;i++)
-    {
-		ll a;
-		cin>>a;
-		a--;
-		initial_mask=(initial_mask|(1<<a));
-	}
-	vector<ll> books(m,0);
-	vector<ll> cost(m,0);
-	for(ll i=0;i<m;i++)
+	for(int i=0;i<n;i++)
 	{
-		cin>>cost[i];
-	}
-	for(ll i=0;i<m;i++)
-	{
-		ll a;
-		cin>>a;
-		ll mask=0;
-		for(ll j=0;j<a;j++)
+		ST s;
+		cin>>s;
+		for(int j=0;j<n;j++)
 		{
-			ll b;
-			cin>>b;
-			b--;
-			mask=(mask|(1<<b));
+			if(s[j]=='0') continue;
+			tree[a[i]].PB(a[j]);
 		}
-		books[i]=mask;
 	}
-	ll maxi=(1<<16);
-	vector<vector<ll>> dp(m+1,vector<ll>(maxi,INT_MAX));
-	dp[0][initial_mask]=0;
-	for(ll i=1;i<=m;i++)
+	vi ans(n,0);
+	for(int i=0;i<n;i++)
 	{
-		for(ll mask=0;mask<=maxi;mask++)
+		vi vis(n+1,0);
+		vi temp=dfs(a[i],vis);
+		int p=0;
+		for(int j=0;j<i;j++)
 		{
-			ll temp=(mask|books[i-1]);
-			dp[i][temp]=min(dp[i][temp],dp[i-1][mask]+cost[i-1]);
+			if(ans[j]==temp[p])
+			{
+				p++;
+			}
 		}
-		for(ll mask=0;mask<=maxi;mask++)
-		{
-			dp[i][mask]=min(dp[i-1][mask],dp[i][mask]);
-		}
+		ans[i]=temp[p];
 	}
-	ll ans=INT_MAX;
-	for(ll mask=0;mask<=maxi;mask++)
+	for(auto i:ans)
 	{
-		if((mask&req_mask)==req_mask){
-			ans=min(ans,dp[m][mask]);
-		}
+		cout<<i<<" ";
 	}
-	if(ans==INT_MAX)
-	{
-		cout<<-1<<endl;
-	}
-	else
-	{
-		cout<<ans<<endl;
-	}
-	
 }
 int main(int argc, const char * argv[]) {
 ios_base::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
     int t=1;
-    cin>>t;
     while(t--)
     {
         solve();
